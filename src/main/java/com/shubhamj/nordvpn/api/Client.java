@@ -14,4 +14,5 @@ public interface Client {
     public List<NordServer> getNordServers() throws IOException;
     public Set<String> getCountries() throws IOException;
     public Map<String, Integer> numberOfServersInCountry() throws IOException;
+    public List<String> getAvailableVpnServers() throws IOException;
 }

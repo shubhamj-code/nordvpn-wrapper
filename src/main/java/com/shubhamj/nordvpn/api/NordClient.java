@@ -22,6 +22,7 @@ public class NordClient implements Client {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
     private final CloseableHttpClient client = HttpClients.createDefault();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private List<NordServer> nordServers;
 
     @Override
     public void close() throws IOException {
@@ -30,9 +31,15 @@ public class NordClient implements Client {
 
     @Override
     public List<NordServer> getNordServers() throws IOException {
-        String nordServers = API_URL + "server";
-        String json = this.getText(nordServers);
-        return this.objectMapper.readValue(json, new TypeReference<List<NordServer>>(){});
+
+        if (nordServers == null) {
+            String nordServers = API_URL + "server";
+            String json = this.getText(nordServers);
+            this.nordServers = this.objectMapper.readValue(json, new TypeReference<List<NordServer>>() {
+            });
+        }
+
+        return nordServers;
     }
 
     @Override
@@ -59,6 +66,15 @@ public class NordClient implements Client {
         return serversInCountries;
     }
 
+    @Override
+    public List<String> getAvailableVpnServers() throws IOException {
+
+        List<String> availableServers = new ArrayList<>();
+        availableServers = this.getNordServers().stream().map(NordServer::getDomain).collect(Collectors.toList());
+        return availableServers;
+
+    }
+
     private String getText(String url) throws IOException {
 
         String tR = "";
@@ -83,7 +99,7 @@ public class NordClient implements Client {
 
     public static void main(String[] args) throws IOException {
         NordClient client = new NordClient();
-        System.out.println(client.numberOfServersInCountry());
+        System.out.println(client.getAvailableVpnServers());
     }
 
 }
