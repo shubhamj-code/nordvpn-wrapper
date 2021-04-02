@@ -75,6 +75,14 @@ public class NordClient implements Client {
 
     }
 
+    @Override
+    public List<String> getVpnServersByCountry(String flag) throws IOException {
+
+       return this.getNordServers().stream().filter( n -> n.getFlag().equalsIgnoreCase(flag)).map(NordServer::getDomain)
+               .collect(Collectors.toList());
+
+    }
+
     private String getText(String url) throws IOException {
 
         String tR = "";

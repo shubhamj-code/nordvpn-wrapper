@@ -15,4 +15,5 @@ public interface Client {
     public Set<String> getCountries() throws IOException;
     public Map<String, Integer> numberOfServersInCountry() throws IOException;
     public List<String> getAvailableVpnServers() throws IOException;
+    public List<String> getVpnServersByCountry(String flag) throws IOException;
 }
