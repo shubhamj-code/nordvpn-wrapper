@@ -11,10 +11,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -49,6 +46,19 @@ public class NordClient implements Client {
         return countries;
     }
 
+    @Override
+    public Map<String, Integer> numberOfServersInCountry() throws IOException {
+        Map<String, Integer> serversInCountries = new HashMap<>();
+
+        List<NordServer> servers = this.getNordServers();
+
+        for (NordServer server : servers) {
+            serversInCountries.put(server.getCountry(), serversInCountries.getOrDefault(server.getCountry(), 0) + 1);
+        }
+
+        return serversInCountries;
+    }
+
     private String getText(String url) throws IOException {
 
         String tR = "";
@@ -73,7 +83,7 @@ public class NordClient implements Client {
 
     public static void main(String[] args) throws IOException {
         NordClient client = new NordClient();
-        System.out.println(client.getCountries());
+        System.out.println(client.numberOfServersInCountry());
     }
 
 }
