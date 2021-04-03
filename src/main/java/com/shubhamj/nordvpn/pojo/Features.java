@@ -238,7 +238,7 @@ public class Features {
         isSkylark = skylark;
     }
 
-    public boolean canBeProxy(){
+    public boolean canBeProxy() {
         return this.isProxy || this.isProxyCyberSec || this.isProxySsl || this.isProxySslCyberSec;
     }
 

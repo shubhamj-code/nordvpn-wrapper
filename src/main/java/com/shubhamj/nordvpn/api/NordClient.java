@@ -23,7 +23,6 @@ public class NordClient implements Client {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
     private final CloseableHttpClient client = HttpClients.createDefault();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private List<NordServer> nordServers;
 
     @Override
     public void close() throws IOException {
@@ -33,15 +32,11 @@ public class NordClient implements Client {
     @Override
     public List<NordServer> getNordServers() throws IOException {
 
-        if (nordServers == null) {
-            String nordServers = API_URL + "server";
-            String json = this.getText(nordServers);
-            this.nordServers = this.objectMapper.readValue(json, new TypeReference<List<NordServer>>() {
-            });
-        }
-
-        return nordServers;
+        String nordUrl = API_URL + "server";
+        String json = this.getText(nordUrl);
+        return this.objectMapper.readValue(json, new TypeReference<List<NordServer>>() {});
     }
+
 
     @Override
     public Set<String> getCountries() throws IOException {
@@ -79,17 +74,27 @@ public class NordClient implements Client {
     @Override
     public List<String> getVpnServersByCountry(String flag) throws IOException {
 
-       return this.getNordServers().stream().filter( n -> n.getFlag().equalsIgnoreCase(flag)).map(NordServer::getDomain)
-               .collect(Collectors.toList());
+        return this.getNordServers().stream().filter(n -> n.getFlag().equalsIgnoreCase(flag)).map(NordServer::getDomain)
+                .collect(Collectors.toList());
 
     }
 
     @Override
     public NordServer getRandomProxy() throws IOException {
-        List<NordServer>  servers = this.getNordServers();
+        List<NordServer> servers = this.getNordServers();
         Collections.shuffle(servers);
-        int randValue = ThreadLocalRandom.current().nextInt(0, servers.size() - 1);
-        return servers.get(randValue);
+        for (NordServer server : servers) {
+            if (server.getFeatures().canBeProxy()) {
+                return server;
+            }
+        }
+        logger.log(Level.SEVERE, "Could not find any random proxy, please try again. ");
+        return null;
+    }
+
+    @Override
+    public List<NordServer> getProxies() throws IOException {
+        return this.getNordServers().stream().filter(e -> e.getFeatures().canBeProxy()).collect(Collectors.toList());
     }
 
     private String getText(String url) throws IOException {
