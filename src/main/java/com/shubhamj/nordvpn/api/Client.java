@@ -16,4 +16,5 @@ public interface Client {
     public Map<String, Integer> numberOfServersInCountry() throws IOException;
     public List<String> getAvailableVpnServers() throws IOException;
     public List<String> getVpnServersByCountry(String flag) throws IOException;
+    public NordServer getRandomProxy() throws IOException;
 }

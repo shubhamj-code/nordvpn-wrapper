@@ -12,6 +12,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -81,6 +82,14 @@ public class NordClient implements Client {
        return this.getNordServers().stream().filter( n -> n.getFlag().equalsIgnoreCase(flag)).map(NordServer::getDomain)
                .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public NordServer getRandomProxy() throws IOException {
+        List<NordServer>  servers = this.getNordServers();
+        Collections.shuffle(servers);
+        int randValue = ThreadLocalRandom.current().nextInt(0, servers.size() - 1);
+        return servers.get(randValue);
     }
 
     private String getText(String url) throws IOException {

@@ -238,6 +238,10 @@ public class Features {
         isSkylark = skylark;
     }
 
+    public boolean canBeProxy(){
+        return this.isProxy || this.isProxyCyberSec || this.isProxySsl || this.isProxySslCyberSec;
+    }
+
     @Override
     public String toString() {
         return "Features{" +
