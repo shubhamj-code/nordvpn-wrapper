@@ -1,2 +1,2 @@
 # nordvpn-wrapper
-A  wrapper class for getting NordVPN servers via Java. 
+A  wrapper class for getting NordVPN public servers information via Java. 
